@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+export const runtime = 'edge';
+
 export async function POST(request: NextRequest) {
-    let message: string = 'Sinussa ei ole vikaa (hosted on vercel)';
-    const body = await request.json()
+    let message: string = 'En saanut symptomeita :(';
+    const body = await request.json();
     const symptoms: string[] = body.sessionInfo?.parameters.symptom;
 
     if (symptoms) {
-        message = `Sinulla on ${symptoms.join(', ')} (hosted on vercel)`;
+        message = `Sinulla on ${symptoms.join(', ')}`;
     }
 
     const dialogFlowFulfillment = {
