@@ -8,14 +8,14 @@ datasource db {
 }
 
 model Diagnosis {
-  id              String      @id @unique @db.Char(20)
+  id              Int      @id @default(autoincrement())
   name            String
   symptoms        Symptom[]
   severity        Severity    @default(MEDIUM)
 }
 
 model Symptom {
-  symptomId       String      @id @unique @db.Char(25)
+  symptomId       Int      @id @default(autoincrement())
   name            String
   diagnosis       Diagnosis[]
 }
