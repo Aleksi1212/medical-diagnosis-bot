@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Diagnosis {
+  id              String      @id @unique @db.Char(20)
+  name            String
+  symptoms        Symptom[]
+  severity        Severity    @default(MEDIUM)
+}
+
+model Symptom {
+  symptomId       String      @id @unique @db.Char(25)
+  name            String
+  diagnosis       Diagnosis[]
+}
+
+enum Severity {
+  HIGH
+  MEDIUM
+  LOW
+}
