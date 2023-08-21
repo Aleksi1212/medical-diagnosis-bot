@@ -1,4 +1,4 @@
-import type { DiagnosisSeverity } from './prismaInit';
+import type { DiagnosisSeverity, SymptomQuery } from './prismaInit';
 
 const findDiagnosisQuery = (symptoms: string[]) => {
     return {
@@ -27,7 +27,7 @@ const findCreatedSymptomsQuery = (symptoms: string[]) => {
 const diagnosisCreateQuery = (
     name: string,
     severity: DiagnosisSeverity,
-    symptomQuery: any[]
+    symptomQuery: SymptomQuery[]
 ) => {
     return {
         data: {
