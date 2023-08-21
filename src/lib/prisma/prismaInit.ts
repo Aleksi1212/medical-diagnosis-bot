@@ -1,4 +1,4 @@
-import { PrismaClient, $Enums, Prisma } from '@prisma/client';
+import { PrismaClient, $Enums } from '@prisma/client';
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
@@ -8,7 +8,7 @@ export const prisma =
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 type DiagnosisSeverity = 'HIGH' | 'MEDIUM' | 'LOW';
-type SymptomQuery = Prisma.SymptomsOnDiagnosisCreateWithoutDiagnosisInput;
+// type SymptomQuery = Prisma.SymptomsOnDiagnosisCreateWithoutDiagnosisInput;
 
 interface Diagnosis {
     id: number;
@@ -22,4 +22,4 @@ interface DiagnosisReturnTypes {
     diagnosis: Diagnosis[];
 }
 
-export type { DiagnosisReturnTypes, DiagnosisSeverity, SymptomQuery };
+export type { DiagnosisReturnTypes, DiagnosisSeverity };

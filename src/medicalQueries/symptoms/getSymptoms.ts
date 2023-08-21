@@ -1,7 +1,7 @@
-import { prisma, type SymptomQuery } from '@/lib/prisma/prismaInit';
+import { prisma } from '@/lib/prisma/prismaInit';
 import { findCreatedSymptomsQuery } from '@/lib/prisma/prismaQueries';
 
-async function getSymptoms(symptoms: string[]): Promise<SymptomQuery[]> {
+async function getSymptoms(symptoms: string[]): Promise<any[]> {
     try {
         const queryObject = findCreatedSymptomsQuery(symptoms);
         const createdSymptoms = await prisma.symptom.findMany(queryObject);
