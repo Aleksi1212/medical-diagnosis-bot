@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import getDiagnosis from '@/medicalQueries/diagnosis/getDiagnosis';
 
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
 interface MessageBody {
     text: {
