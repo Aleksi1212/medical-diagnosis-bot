@@ -9,14 +9,14 @@ datasource db {
 
 model Diagnosis {
   id              Int                     @id @default(autoincrement())
-  name            String
+  name            String                  @unique
   symptoms        SymptomsOnDiagnosis[]
   severity        Severity                @default(MEDIUM)
 }
 
 model Symptom {
   id              Int                     @id @default(autoincrement())
-  name            String
+  name            String                  @unique
   diagnosis       SymptomsOnDiagnosis[]
 }
 
