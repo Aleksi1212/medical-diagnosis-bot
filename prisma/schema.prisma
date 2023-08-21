@@ -8,16 +8,25 @@ datasource db {
 }
 
 model Diagnosis {
-  id              Int      @id @default(autoincrement())
+  id              Int                     @id @default(autoincrement())
   name            String
-  symptoms        Symptom[]
-  severity        Severity    @default(MEDIUM)
+  symptoms        SymptomsOnDiagnosis[]
+  severity        Severity                @default(MEDIUM)
 }
 
 model Symptom {
-  symptomId       Int      @id @default(autoincrement())
+  id              Int                     @id @default(autoincrement())
   name            String
-  diagnosis       Diagnosis[]
+  diagnosis       SymptomsOnDiagnosis[]
+}
+
+model SymptomsOnDiagnosis {
+  diagnosis       Diagnosis               @relation(fields: [diagnosisId], references: [id])
+  diagnosisId     Int
+  symptom         Symptom                 @relation(fields: [symptomId], references: [id])
+  symptomId       Int
+
+  @@id([diagnosisId, symptomId])
 }
 
 enum Severity {
