@@ -30,9 +30,34 @@ export async function POST(request: NextRequest) {
 
     if (symptoms) {
         const { error, errorMessage, diagnosis } = await getDiagnosis(symptoms);
-        if (diagnosis.length > 0) {
+        if (diagnosis.length < 1) {
             messageBody[0].text.text = [
-                `En löytänyt diagnoosia oirella ${symptoms} :(`,
+                `En löytänyt diagnoosia oirella ${symptoms.join(', ')} :(`,
+            ];
+        }
+        if (error) {
+            messageBody[0].text.text = [errorMessage];
+        }
+
+        if (!error && diagnosis.length >= 1) {
+            messageBody[0].text.text = ['Sinulla saattaa olla.'];
+            const diagnosisMessages: MessageBody[] = diagnosis.map((data) => {
+                return {
+                    text: {
+                        text: [data.name],
+                    },
+                };
+            });
+            messageBody = [
+                ...messageBody,
+                ...diagnosisMessages,
+                {
+                    text: {
+                        text: [
+                            'Suosittelen käymään lääkärissä, ja saada ammattilaisen mielipide',
+                        ],
+                    },
+                },
             ];
         }
     }
