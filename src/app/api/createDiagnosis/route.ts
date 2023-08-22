@@ -12,16 +12,10 @@ interface DiagnosisData {
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
-    const diagnosisData: DiagnosisData[] = body.diagnosisData || [
-        {
-            name: '',
-            severity: 'LOW',
-            symptoms: [],
-        },
-    ];
+    const diagnosisData: DiagnosisData[] = body.diagnosisData || [];
     let createdDiagnosis: any[] = [];
 
-    if (!diagnosisData[0].name) {
+    if (diagnosisData.length < 1) {
         return NextResponse.json('No data received');
     }
 
@@ -43,5 +37,5 @@ export async function POST(request: NextRequest) {
         createdDiagnosis.push(diagnosis);
     }
 
-    return NextResponse.json(createdDiagnosis);
+    return NextResponse.json(createdDiagnosis, { status: 201 });
 }
