@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-import getDiagnosis from '@/medicalQueries/diagnosis/getDiagnosis';
+import getDiagnosis from '@/lib/medicalQueries/diagnosis/getDiagnosis';
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
