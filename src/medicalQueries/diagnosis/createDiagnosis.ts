@@ -7,7 +7,7 @@ import {
 import { diagnosisCreateQuery } from '@/lib/prisma/prismaQueries';
 import getSymptoms from '../symptoms/getSymptoms';
 
-async function createDiangosis(
+async function createDiagnosis(
     diagnosisName: string,
     severity: DiagnosisSeverity,
     symptoms: string[]
@@ -36,4 +36,4 @@ async function createDiangosis(
     }
 }
 
-export default createDiangosis;
+export default createDiagnosis;
