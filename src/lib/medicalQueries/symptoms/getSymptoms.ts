@@ -9,7 +9,7 @@ async function getSymptoms(symptoms: string[]): Promise<SymptomQuery[]> {
             const symptomName = symptoms[symptom];
 
             const queryObject = findCreatedSymptomsQuery(symptomName);
-            const createdSymptom = await prisma.symptom.findUnique(queryObject);
+            const createdSymptom = await prisma.symptom.findFirst(queryObject)
 
             let symptomQuery: SymptomQuery;
 
