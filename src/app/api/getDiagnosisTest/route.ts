@@ -10,5 +10,5 @@ export async function GET(request: NextRequest) {
     if (symptoms) decoded = JSON.parse(decodeURIComponent(symptoms));
 
     const diagnosis = await getDiagnosis(decoded);
-    return NextResponse.json(diagnosis);
+    return NextResponse.json(diagnosis, { status: 200 });
 }
