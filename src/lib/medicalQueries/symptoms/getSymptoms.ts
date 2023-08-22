@@ -3,31 +3,39 @@ import { findCreatedSymptomsQuery } from '@/lib/prisma/prismaQueries';
 
 async function getSymptoms(symptoms: string[]): Promise<SymptomQuery[]> {
     try {
-        const queryObject = findCreatedSymptomsQuery(symptoms);
-        const createdSymptoms = await prisma.symptom.findMany(queryObject);
+        let symptomQueryArray: SymptomQuery[] = [];
 
-        if (createdSymptoms.length > 0) {
-            return createdSymptoms.map((symptom) => {
-                const { id, name } = symptom;
-                return {
+        for (const symptom in symptoms) {
+            const symptomName = symptoms[symptom];
+
+            const queryObject = findCreatedSymptomsQuery(symptomName);
+            const createdSymptom = await prisma.symptom.findUnique(queryObject);
+
+            let symptomQuery: SymptomQuery;
+
+            if (createdSymptom) {
+                const { id } = createdSymptom;
+                symptomQuery = {
                     symptom: {
-                        connect: { id, name },
+                        connect: { id },
                     },
                 };
-            });
-        }
-        return symptoms.map((symptom) => {
-            return {
-                symptom: {
-                    create: {
-                        name: symptom,
+                symptomQueryArray.push(symptomQuery);
+            } else {
+                symptomQuery = {
+                    symptom: {
+                        create: {
+                            name: symptomName,
+                        },
                     },
-                },
-            };
-        });
+                };
+                symptomQueryArray.push(symptomQuery);
+            }
+        }
+        return symptomQueryArray;
     } catch (error: any) {
         throw new Error(error.message);
     }
 }
 
-export default getSymptoms
+export default getSymptoms;
