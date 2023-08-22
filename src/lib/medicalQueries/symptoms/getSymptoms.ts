@@ -31,6 +31,7 @@ async function getSymptoms(symptoms: string[]): Promise<SymptomQuery[]> {
                 };
                 symptomQueryArray.push(symptomQuery);
             }
+            await prisma.$disconnect()
         }
         return symptomQueryArray;
     } catch (error: any) {
