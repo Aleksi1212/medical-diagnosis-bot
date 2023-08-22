@@ -14,12 +14,10 @@ const findDiagnosisQuery = (symptoms: string[]) => {
     };
 };
 
-const findCreatedSymptomsQuery = (symptoms: string[]) => {
+const findCreatedSymptomsQuery = (symptom: string) => {
     return {
         where: {
-            name: {
-                in: symptoms,
-            },
+            name: symptom,
         },
     };
 };
