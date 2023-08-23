@@ -6,7 +6,9 @@ const findDiagnosisQuery = (symptoms: string[]) => {
             symptoms: {
                 some: {
                     symptom: {
-                        name: { in: symptoms },
+                        name: {
+                            in: symptoms,
+                        },
                     },
                 },
             },
@@ -18,6 +20,23 @@ const findCreatedSymptomsQuery = (symptom: string) => {
     return {
         where: {
             name: symptom,
+        },
+    };
+};
+
+const findSymptomsFromDiagnosisQuery = (diagnosisIds: number[]) => {
+    return {
+        include: {
+            diagnosis: true,
+        },
+        where: {
+            diagnosis: {
+                some: {
+                    diagnosisId: {
+                        in: diagnosisIds,
+                    },
+                },
+            },
         },
     };
 };
@@ -38,4 +57,9 @@ const diagnosisCreateQuery = (
     };
 };
 
-export { findDiagnosisQuery, findCreatedSymptomsQuery, diagnosisCreateQuery };
+export {
+    findDiagnosisQuery,
+    findCreatedSymptomsQuery,
+    findSymptomsFromDiagnosisQuery,
+    diagnosisCreateQuery,
+};
