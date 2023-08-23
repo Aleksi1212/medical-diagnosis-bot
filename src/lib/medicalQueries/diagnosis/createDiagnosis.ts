@@ -4,7 +4,7 @@ import {
     type DiagnosisSeverity,
 } from '@/lib/prisma/prismaInit';
 
-import { diagnosisCreateQuery } from '@/lib/prisma/prismaQueries';
+import { diagnosisCreateQuery } from '@/lib/prisma/prismaQueryObjects';
 import getSymptoms from '../symptoms/getSymptoms';
 
 async function createDiagnosis(

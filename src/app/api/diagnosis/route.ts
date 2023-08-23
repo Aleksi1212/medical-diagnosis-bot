@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+// import getSymptomsFromDiagnosis from '@/lib/medicalQueries/symptoms/getSymptomsFromDiagnosis';
 import getDiagnosis from '@/lib/medicalQueries/diagnosis/getDiagnosis';
 
 // export const runtime = 'edge';
@@ -13,6 +14,11 @@ interface MessageBody {
 interface Fulfillment {
     fulfillmentResponse: {
         messages: MessageBody[];
+    };
+    sessionInfo: {
+        parameters: {
+            symptom: any[];
+        };
     };
 }
 
@@ -65,6 +71,11 @@ export async function POST(request: NextRequest) {
     const dialogFlowFulfillment: Fulfillment = {
         fulfillmentResponse: {
             messages: messageBody,
+        },
+        sessionInfo: {
+            parameters: {
+                symptom: ['this is a test', 'testpt2'],
+            },
         },
     };
     return NextResponse.json<Fulfillment>(dialogFlowFulfillment, {

@@ -1,5 +1,5 @@
 import { prisma, type SymptomQuery } from '@/lib/prisma/prismaInit';
-import { findCreatedSymptomsQuery } from '@/lib/prisma/prismaQueries';
+import { findCreatedSymptomsQuery } from '@/lib/prisma/prismaQueryObjects';
 
 async function getSymptoms(symptoms: string[]): Promise<SymptomQuery[]> {
     try {
@@ -9,7 +9,7 @@ async function getSymptoms(symptoms: string[]): Promise<SymptomQuery[]> {
             const symptomName = symptoms[symptom];
 
             const queryObject = findCreatedSymptomsQuery(symptomName);
-            const createdSymptom = await prisma.symptom.findFirst(queryObject)
+            const createdSymptom = await prisma.symptom.findFirst(queryObject);
 
             let symptomQuery: SymptomQuery;
 
@@ -31,7 +31,7 @@ async function getSymptoms(symptoms: string[]): Promise<SymptomQuery[]> {
                 };
                 symptomQueryArray.push(symptomQuery);
             }
-            await prisma.$disconnect()
+            await prisma.$disconnect();
         }
         return symptomQueryArray;
     } catch (error: any) {
