@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     let messageBody: MessageBody[] = [
         {
             text: {
-                text: ['En saanut oireiat :('],
+                text: ['En saanut oireita :('],
             },
         },
     ];
@@ -46,9 +46,9 @@ export async function POST(request: NextRequest) {
     };
 
     const body = await request.json();
-    const symptoms: string[] = body.sessionInfo?.parameters.symptom || [];
+    const symptoms: string[] = body.sessionInfo?.parameters.symptom;
 
-    if (symptoms.length > 1) {
+    if (symptoms) {
         parameters.symptom = symptoms
         const symptomString = symptoms.join(', ');
         const { error, errorMessage, possibleDiagnosis } =
