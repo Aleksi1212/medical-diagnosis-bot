@@ -15,11 +15,30 @@ interface Diagnosis {
     name: string;
     severity: $Enums.Severity;
 }
-
-interface DiagnosisReturnTypes {
-    error: boolean;
-    errorMessage: string;
-    diagnosis: Diagnosis[];
+interface Symptom {
+    id: number
+    name: string
+    diagnosis: {
+        diagnosisId: number
+        symptomId: number
+    }[]
 }
 
-export type { DiagnosisReturnTypes, DiagnosisSeverity, SymptomQuery };
+interface ReturnTypes {
+    error: boolean;
+    errorMessage: string;
+}
+
+interface DiagnosisReturnTypes extends ReturnTypes {
+    diagnosis: Diagnosis[];
+}
+interface SymptomReturnTypes extends ReturnTypes {
+    possibleDiagnosis: Symptom[];
+}
+
+export type {
+    DiagnosisReturnTypes,
+    DiagnosisSeverity,
+    SymptomQuery,
+    SymptomReturnTypes,
+};
