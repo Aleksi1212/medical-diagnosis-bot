@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
         asked: [],
         answer: '',
         endQuestions: 'False',
+        diagnosisConfidence: []
     };
 
     if (symptoms) {
@@ -69,7 +70,8 @@ export async function POST(request: NextRequest) {
             parameters.startQuestions = 'True';
             parameters.diagnosisId = diagnosisId;
             parameters.asking = firstSymptom.name;
-            parameters.asked = [firstSymptom.name];
+            parameters.asked = [...symptoms, firstSymptom.name];
+            parameters.diagnosisConfidence = [diagnosisId]
         }
     }
 

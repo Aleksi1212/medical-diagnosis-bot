@@ -8,9 +8,10 @@ interface MessageBody {
 interface DialogFlowParameters {
     symptom: string[];
     sessionId: string;
-    diagnosisId: number
-    asking: string
-    asked: string[]
+    diagnosisId: number;
+    asking: string;
+    asked: string[];
+    diagnosisConfidence: number[];
 }
 interface DialogFlowFulfillment {
     fulfillmentResponse: {

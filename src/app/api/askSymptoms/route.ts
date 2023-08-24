@@ -32,8 +32,15 @@ export async function POST(request: NextRequest) {
 
     if (parameters) {
         console.log(parameters);
-        const { symptom, sessionId, diagnosisId, answer, asking, asked } =
-            parameters;
+        const {
+            symptom,
+            sessionId,
+            diagnosisId,
+            answer,
+            asking,
+            asked,
+            diagnosisConfidence,
+        } = parameters;
         let sessionData: Symptom[] = [];
 
         if (sessionId && answer === 'Joo') {
@@ -48,6 +55,10 @@ export async function POST(request: NextRequest) {
             parameters.symptom = [...symptom, asking];
             parameters.asking = nextSymptom?.name || '';
             parameters.asked = [...asked, nextSymptom?.name || ''];
+            parameters.diagnosisConfidence = [
+                ...diagnosisConfidence,
+                parameters.diagnosisId,
+            ];
             parameters.answer = '';
             // parameters.diagnosisId = nextSymptom?.diagnosis[0].diagnosisId || 0
 
@@ -57,13 +68,22 @@ export async function POST(request: NextRequest) {
 
             const randomIndex = getRandomNumber(sessionData.length);
             const nextSymptom = sessionData[randomIndex];
+            const diagnosisId = nextSymptom.diagnosis[0].diagnosisId;
 
             parameters.asking = nextSymptom.name;
             parameters.asked = [...asked, nextSymptom.name];
-            parameters.diagnosisId = nextSymptom.diagnosis[0].diagnosisId;
+            parameters.diagnosisId = diagnosisId;
+            parameters.diagnosisConfidence = [
+                ...diagnosisConfidence,
+                diagnosisId,
+            ];
             parameters.answer = '';
 
             messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
+        }
+
+        if (diagnosisConfidence.length >= 5) {
+            parameters.endQuestions = 'True'
         }
     }
 
