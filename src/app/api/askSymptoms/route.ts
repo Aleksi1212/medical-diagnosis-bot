@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     const parameters: QuestionParameters = body.sessionInfo?.parameters;
 
     if (parameters) {
+        console.log(parameters)
         const { symptom, sessionId, diagnosisId, answer, asking } = parameters;
         let sessionData: Symptom[] = [];
 
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
 
             parameters.symptom = [...symptom, asking];
             parameters.asking = nextSymptom?.name || '';
-            parameters.diagnosisId = nextSymptom?.diagnosis[0].diagnosisId || 0
+            // parameters.diagnosisId = nextSymptom?.diagnosis[0].diagnosisId || 0
 
             messageBody[0].text.text = [`Tunnetko ${nextSymptom?.name}`];
         } else if (sessionId && answer === 'Ei') {
