@@ -53,13 +53,16 @@ export async function POST(request: NextRequest) {
         }
 
         if (!error && possibleSymptoms.length >= 1) {
-            const firstSymptom = possibleSymptoms[0];
+            const randomIndex = Math.floor(
+                Math.random() * possibleSymptoms.length
+            );
+            const firstSymptom = possibleSymptoms[randomIndex];
             const diagnosisId = firstSymptom.diagnosis[0].diagnosisId;
-            const position = possibleSymptoms.indexOf(firstSymptom);
-            const cookieValue = JSON.stringify({ diagnosisId, position });
 
             await sessionStore.set(sessionId, possibleSymptoms);
-            cookieStore.set('currentSymptom', cookieValue);
+            cookieStore.set('currentSymptom', String(diagnosisId), {
+                httpOnly: true,
+            });
 
             messageBody[0].text.text = [`Tunnetko ${firstSymptom.name}`];
             parameters.startQuestions = 'True';
