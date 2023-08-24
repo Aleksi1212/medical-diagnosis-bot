@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { kv } from '@vercel/kv';
-import { cookies } from 'next/headers';
 
 import { v4 as uuidv4 } from 'uuid';
 import getSymptomsFromDiagnosis from '@/lib/medicalQueries/symptoms/getSymptomsFromDiagnosis';
@@ -10,6 +9,7 @@ import getSymptomsFromDiagnosis from '@/lib/medicalQueries/symptoms/getSymptomsF
 
 interface PossibleDiagnosisParameters extends DialogFlowParameters {
     startQuestions: StringBoolean;
+    diagnosisId: number
 }
 interface PossibleDiagnosisFulfillment extends DialogFlowFulfillment {
     sessionInfo: {
@@ -20,7 +20,6 @@ interface PossibleDiagnosisFulfillment extends DialogFlowFulfillment {
 export async function POST(request: NextRequest) {
     const sessionId = uuidv4();
     const sessionStore = kv;
-    const cookieStore = cookies();
 
     let messageBody: MessageBody[] = [
         {
@@ -32,6 +31,7 @@ export async function POST(request: NextRequest) {
     let parameters: PossibleDiagnosisParameters = {
         symptom: [],
         startQuestions: 'False',
+        diagnosisId: 0,
         sessionId,
     };
 
@@ -60,12 +60,10 @@ export async function POST(request: NextRequest) {
             const diagnosisId = firstSymptom.diagnosis[0].diagnosisId;
 
             await sessionStore.set(sessionId, possibleSymptoms);
-            cookieStore.set('currentSymptom', String(diagnosisId), {
-                httpOnly: true,
-            });
 
             messageBody[0].text.text = [`Tunnetko ${firstSymptom.name}`];
             parameters.startQuestions = 'True';
+            parameters.diagnosisId = diagnosisId
         }
     }
 
