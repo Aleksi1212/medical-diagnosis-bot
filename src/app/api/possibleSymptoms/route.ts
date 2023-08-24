@@ -1,5 +1,4 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { kv } from '@vercel/kv';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -7,17 +6,6 @@ import getSymptomsFromDiagnosis from '@/lib/medicalQueries/symptoms/getSymptomsF
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 
 // export const runtime = 'edge';
-
-interface PossibleDiagnosisParameters extends DialogFlowParameters {
-    endQuestions: StringBoolean;
-    startQuestions: StringBoolean;
-    answer: string;
-}
-interface PossibleDiagnosisFulfillment extends DialogFlowFulfillment {
-    sessionInfo: {
-        parameters: PossibleDiagnosisParameters;
-    };
-}
 
 export async function POST(request: NextRequest) {
     const sessionId = uuidv4();
@@ -33,7 +21,7 @@ export async function POST(request: NextRequest) {
             },
         },
     ];
-    let parameters: PossibleDiagnosisParameters = {
+    let parameters: DialogFlowParameters = {
         symptom: [],
         startQuestions: 'False',
         diagnosisId: 0,
@@ -42,7 +30,8 @@ export async function POST(request: NextRequest) {
         asked: [],
         answer: '',
         endQuestions: 'False',
-        diagnosisConfidence: []
+        diagnosisConfidence: [],
+        ended: 'False'
     };
 
     if (symptoms) {
@@ -71,11 +60,11 @@ export async function POST(request: NextRequest) {
             parameters.diagnosisId = diagnosisId;
             parameters.asking = firstSymptom.name;
             parameters.asked = [...symptoms, firstSymptom.name];
-            parameters.diagnosisConfidence = [diagnosisId]
+            parameters.diagnosisConfidence = [diagnosisId];
         }
     }
 
-    const dialogFlowFulfillment: PossibleDiagnosisFulfillment = {
+    const dialogFlowFulfillment: DialogFlowFulfillment = {
         fulfillmentResponse: {
             messages: messageBody,
         },
@@ -83,10 +72,7 @@ export async function POST(request: NextRequest) {
             parameters,
         },
     };
-    return NextResponse.json<PossibleDiagnosisFulfillment>(
-        dialogFlowFulfillment,
-        {
-            status: 200,
-        }
-    );
+    return NextResponse.json<DialogFlowFulfillment>(dialogFlowFulfillment, {
+        status: 200,
+    });
 }

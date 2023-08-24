@@ -1,21 +1,9 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { kv } from '@vercel/kv';
 
-// import getDiagnosis from '@/lib/medicalQueries/diagnosis/getDiagnosis';
 import type { Symptom } from '@/lib/prisma/prismaInit';
 import findSymptomWithSameDiagnosiId from '@/lib/utils/diagnosis/findSymptomWithSameDiangosisId';
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
-
-interface QuestionParameters extends DialogFlowParameters {
-    endQuestions: StringBoolean;
-    answer: string;
-}
-interface QuestionFulfillment extends DialogFlowFulfillment {
-    sessionInfo: {
-        parameters: QuestionParameters;
-    };
-}
 
 export async function POST(request: NextRequest) {
     const sessionStore = kv;
@@ -28,7 +16,7 @@ export async function POST(request: NextRequest) {
             },
         },
     ];
-    const parameters: QuestionParameters = body.sessionInfo?.parameters;
+    const parameters: DialogFlowParameters = body.sessionInfo?.parameters;
 
     if (parameters) {
         const {
@@ -42,14 +30,7 @@ export async function POST(request: NextRequest) {
         } = parameters;
         let sessionData: Symptom[] = [];
 
-        if (sessionId && diagnosisConfidence.length > 4) {
-            parameters.endQuestions = 'True';
-            messageBody[0].text.text = [''];
-        } else if (
-            sessionId &&
-            answer === 'Joo' &&
-            diagnosisConfidence.length < 5
-        ) {
+        if (sessionId && answer === 'Joo') {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
             const nextSymptom = await findSymptomWithSameDiagnosiId(
                 diagnosisId,
@@ -66,14 +47,11 @@ export async function POST(request: NextRequest) {
                 parameters.diagnosisId,
             ];
             parameters.answer = '';
-            // parameters.diagnosisId = nextSymptom?.diagnosis[0].diagnosisId || 0
+            if (diagnosisConfidence.length > 4)
+                parameters.endQuestions = 'True';
 
             messageBody[0].text.text = [`Tunnetko ${nextSymptom?.name}`];
-        } else if (
-            sessionId &&
-            answer === 'Ei' &&
-            diagnosisConfidence.length < 5
-        ) {
+        } else if (sessionId && answer === 'Ei') {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
 
             const randomIndex = getRandomNumber(sessionData.length);
@@ -84,12 +62,14 @@ export async function POST(request: NextRequest) {
             parameters.asked = [...asked, nextSymptom.name];
             parameters.diagnosisId = diagnosisId;
             parameters.answer = '';
+            if (diagnosisConfidence.length > 4)
+                parameters.endQuestions = 'True';
 
             messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
         }
     }
 
-    const dialogFlowFulfillment: QuestionFulfillment = {
+    const dialogFlowFulfillment: DialogFlowFulfillment = {
         fulfillmentResponse: {
             messages: messageBody,
         },
@@ -98,7 +78,7 @@ export async function POST(request: NextRequest) {
         },
     };
 
-    return NextResponse.json<QuestionFulfillment>(dialogFlowFulfillment, {
+    return NextResponse.json<DialogFlowFulfillment>(dialogFlowFulfillment, {
         status: 200,
     });
 }

@@ -1,5 +1,4 @@
-import { NextResponse } from 'next/server';
-import { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 import createDiagnosis from '@/lib/medicalQueries/diagnosis/createDiagnosis';
 import type { DiagnosisSeverity } from '@/lib/prisma/prismaInit';
