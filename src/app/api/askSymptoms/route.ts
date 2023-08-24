@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         } = parameters;
         let sessionData: Symptom[] = [];
 
-        if (sessionId && diagnosisConfidence.length >= 4) {
+        if (sessionId && diagnosisConfidence.length > 4) {
             parameters.endQuestions = 'True';
             messageBody[0].text.text = [''];
         } else if (
