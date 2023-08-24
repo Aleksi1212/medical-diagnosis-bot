@@ -39,7 +39,8 @@ export async function POST(request: NextRequest) {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
             const nextSymptom = await findSymptomWithSameDiagnosiId(
                 diagnosisId,
-                sessionData
+                sessionData,
+                asking
             );
 
             parameters.symptom = [...symptom, asking];
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
             parameters.asking = nextSymptom.name
             parameters.diagnosisId = nextSymptom.diagnosis[0].diagnosisId
             parameters.answer = ''
-            
+
             messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`]
         }
     }
