@@ -33,7 +33,7 @@ interface DiagnosisReturnTypes extends ReturnTypes {
     diagnosis: Diagnosis[];
 }
 interface SymptomReturnTypes extends ReturnTypes {
-    possibleDiagnosis: Symptom[];
+    possibleSymptoms: Symptom[];
 }
 
 export type {

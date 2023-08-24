@@ -14,19 +14,19 @@ async function getSymptomsFromDiagnosis(
 
         const symptomsQueryObject =
             findSymptomsFromDiagnosisQuery(diagnosisIds);
-        const possibleDiagnosis = await prisma.symptom.findMany(symptomsQueryObject);
+        const possibleSymptoms = await prisma.symptom.findMany(symptomsQueryObject);
 
         return {
             error: false,
             errorMessage: '',
-            possibleDiagnosis
+            possibleSymptoms
         };
     } catch (error: any) {
         console.error(error);
         return {
             error: true,
             errorMessage: error.message,
-            possibleDiagnosis: [],
+            possibleSymptoms: [],
         };
     }
 }
