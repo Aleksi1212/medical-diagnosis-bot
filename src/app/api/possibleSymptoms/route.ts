@@ -10,6 +10,7 @@ import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 
 interface PossibleDiagnosisParameters extends DialogFlowParameters {
     startQuestions: StringBoolean;
+    answer: 'Joo' | 'Ei'
 }
 interface PossibleDiagnosisFulfillment extends DialogFlowFulfillment {
     sessionInfo: {
@@ -37,6 +38,7 @@ export async function POST(request: NextRequest) {
         diagnosisId: 0,
         sessionId,
         asking: '',
+        answer: 'Joo'
     };
 
     if (symptoms) {
@@ -60,7 +62,7 @@ export async function POST(request: NextRequest) {
 
             await sessionStore.set(sessionId, possibleSymptoms);
 
-            messageBody[0].text.text = [`Tunnetko ${firstSymptom.name}`];
+            messageBody[0].text.text = [''];
             parameters.startQuestions = 'True';
             parameters.diagnosisId = diagnosisId;
             parameters.asking = firstSymptom.name;
