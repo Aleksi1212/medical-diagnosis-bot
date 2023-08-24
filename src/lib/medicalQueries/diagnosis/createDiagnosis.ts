@@ -1,6 +1,6 @@
 import {
     prisma,
-    type DiagnosisReturnTypes,
+    type DiangnosisCreationReturnTypes,
     type DiagnosisSeverity,
 } from '@/lib/prisma/prismaInit';
 
@@ -11,7 +11,7 @@ async function createDiagnosis(
     diagnosisName: string,
     severity: DiagnosisSeverity,
     symptoms: string[]
-): Promise<DiagnosisReturnTypes> {
+): Promise<DiangnosisCreationReturnTypes> {
     try {
         const symptomCreationData = await getSymptoms(symptoms);
         const queryObject = diagnosisCreateQuery(

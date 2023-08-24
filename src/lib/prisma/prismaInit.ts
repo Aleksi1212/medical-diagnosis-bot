@@ -35,11 +35,15 @@ interface DiagnosisReturnTypes extends ReturnTypes {
 interface SymptomReturnTypes extends ReturnTypes {
     possibleSymptoms: Symptom[];
 }
+interface DiangnosisCreationReturnTypes extends ReturnTypes {
+    diagnosis: Diagnosis[];
+}
 
 export type {
     DiagnosisReturnTypes,
     DiagnosisSeverity,
     Diagnosis,
+    DiangnosisCreationReturnTypes,
     SymptomQuery,
     SymptomReturnTypes,
     Symptom,
