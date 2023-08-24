@@ -1,6 +1,14 @@
 import type { DiagnosisSeverity, SymptomQuery } from './prismaInit';
 
-const findDiagnosisQuery = (symptoms: string[]) => {
+const findSingleDiagnosisQuery = (diagnosisId: number) => {
+    return {
+        where: {
+            id: diagnosisId,
+        },
+    };
+};
+
+const findMutltipleDiagnosisQuery = (symptoms: string[]) => {
     return {
         where: {
             symptoms: {
@@ -58,7 +66,8 @@ const diagnosisCreateQuery = (
 };
 
 export {
-    findDiagnosisQuery,
+    findSingleDiagnosisQuery,
+    findMutltipleDiagnosisQuery,
     findCreatedSymptomsQuery,
     findSymptomsFromDiagnosisQuery,
     diagnosisCreateQuery,
