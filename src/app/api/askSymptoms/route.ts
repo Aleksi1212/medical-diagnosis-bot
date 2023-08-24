@@ -31,8 +31,9 @@ export async function POST(request: NextRequest) {
     const parameters: QuestionParameters = body.sessionInfo?.parameters;
 
     if (parameters) {
-        console.log(parameters)
-        const { symptom, sessionId, diagnosisId, answer, asking } = parameters;
+        console.log(parameters);
+        const { symptom, sessionId, diagnosisId, answer, asking, asked } =
+            parameters;
         let sessionData: Symptom[] = [];
 
         if (sessionId && answer === 'Joo') {
@@ -40,26 +41,29 @@ export async function POST(request: NextRequest) {
             const nextSymptom = await findSymptomWithSameDiagnosiId(
                 diagnosisId,
                 sessionData,
-                asking
+                asking,
+                asked
             );
 
             parameters.symptom = [...symptom, asking];
             parameters.asking = nextSymptom?.name || '';
-            parameters.answer = ''
+            parameters.asked = [...asked, nextSymptom?.name || ''];
+            parameters.answer = '';
             // parameters.diagnosisId = nextSymptom?.diagnosis[0].diagnosisId || 0
 
             messageBody[0].text.text = [`Tunnetko ${nextSymptom?.name}`];
         } else if (sessionId && answer === 'Ei') {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
 
-            const randomIndex = getRandomNumber(sessionData.length)
-            const nextSymptom = sessionData[randomIndex]
+            const randomIndex = getRandomNumber(sessionData.length);
+            const nextSymptom = sessionData[randomIndex];
 
-            parameters.asking = nextSymptom.name
-            parameters.diagnosisId = nextSymptom.diagnosis[0].diagnosisId
-            parameters.answer = ''
+            parameters.asking = nextSymptom.name;
+            parameters.asked = [...asked, nextSymptom.name];
+            parameters.diagnosisId = nextSymptom.diagnosis[0].diagnosisId;
+            parameters.answer = '';
 
-            messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`]
+            messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
         }
     }
 

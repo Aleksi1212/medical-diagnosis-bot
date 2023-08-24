@@ -39,8 +39,9 @@ export async function POST(request: NextRequest) {
         diagnosisId: 0,
         sessionId,
         asking: '',
+        asked: [],
         answer: '',
-        endQuestions: 'False'
+        endQuestions: 'False',
     };
 
     if (symptoms) {
@@ -68,6 +69,7 @@ export async function POST(request: NextRequest) {
             parameters.startQuestions = 'True';
             parameters.diagnosisId = diagnosisId;
             parameters.asking = firstSymptom.name;
+            parameters.asked = [firstSymptom.name];
         }
     }
 

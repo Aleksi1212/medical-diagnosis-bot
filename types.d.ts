@@ -10,6 +10,7 @@ interface DialogFlowParameters {
     sessionId: string;
     diagnosisId: number
     asking: string
+    asked: string[]
 }
 interface DialogFlowFulfillment {
     fulfillmentResponse: {
