@@ -47,10 +47,11 @@ export async function POST(request: NextRequest) {
                 parameters.diagnosisId,
             ];
             parameters.answer = '';
-            if (diagnosisConfidence.length > 4)
+            if (diagnosisConfidence.length > 4) {
                 parameters.endQuestions = 'True';
-
-            messageBody[0].text.text = [`Tunnetko ${nextSymptom?.name}`];
+            } else {
+                messageBody[0].text.text = [`Tunnetko ${nextSymptom?.name}`];
+            }
         } else if (sessionId && answer === 'Ei') {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
 
@@ -62,10 +63,11 @@ export async function POST(request: NextRequest) {
             parameters.asked = [...asked, nextSymptom.name];
             parameters.diagnosisId = diagnosisId;
             parameters.answer = '';
-            if (diagnosisConfidence.length > 4)
+            if (diagnosisConfidence.length > 4) {
                 parameters.endQuestions = 'True';
-
-            messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
+            } else {
+                messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
+            }
         }
     }
 
