@@ -42,8 +42,9 @@ export async function POST(request: NextRequest) {
         } = parameters;
         let sessionData: Symptom[] = [];
 
-        if (sessionId && diagnosisConfidence.length >= 5) {
+        if (sessionId && diagnosisConfidence.length >= 4) {
             parameters.endQuestions = 'True';
+            messageBody[0].text.text = [''];
         } else if (
             sessionId &&
             answer === 'Joo' &&
@@ -82,10 +83,6 @@ export async function POST(request: NextRequest) {
             parameters.asking = nextSymptom.name;
             parameters.asked = [...asked, nextSymptom.name];
             parameters.diagnosisId = diagnosisId;
-            parameters.diagnosisConfidence = [
-                ...diagnosisConfidence,
-                diagnosisId,
-            ];
             parameters.answer = '';
 
             messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
