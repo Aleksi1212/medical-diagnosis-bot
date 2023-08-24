@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
             if (diagnosisConfidence.length > 4) {
                 parameters.endQuestions = 'True';
+                messageBody[0].text.text = [''];
             } else {
                 messageBody[0].text.text = [`Tunnetko ${nextSymptom?.name}`];
             }
@@ -65,6 +66,7 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
             if (diagnosisConfidence.length > 4) {
                 parameters.endQuestions = 'True';
+                messageBody[0].text.text = [''];
             } else {
                 messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
             }
