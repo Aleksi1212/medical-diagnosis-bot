@@ -1,8 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { kv } from '@vercel/kv';
+
 import getDiagnosis from '@/lib/medicalQueries/diagnosis/getDiagnosis';
 import mostConfidentDiagnosis from '@/lib/utils/diagnosis/mostConfidentDiagnosis';
 
 export async function POST(request: NextRequest) {
+    const sessionStore = kv
     const body = await request.json();
     const parameters: DialogFlowParameters = body.sessionInfo?.parameters;
 
@@ -15,7 +18,7 @@ export async function POST(request: NextRequest) {
     ];
 
     if (parameters) {
-        const { diagnosisConfidence } = parameters;
+        const { diagnosisConfidence, sessionId } = parameters;
         const diagnosisId = mostConfidentDiagnosis(diagnosisConfidence);
         const { error, errorMessage, diagnosis } = await getDiagnosis(
             diagnosisId
@@ -32,6 +35,7 @@ export async function POST(request: NextRequest) {
             messageBody[0].text.text = [message];
         }
         parameters.ended = 'True';
+        await sessionStore.del(sessionId)
     }
 
     const dialogFlowFulfillment: DialogFlowFulfillment = {
