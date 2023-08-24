@@ -11,7 +11,7 @@ import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 interface PossibleDiagnosisParameters extends DialogFlowParameters {
     endQuestions: StringBoolean;
     startQuestions: StringBoolean;
-    answer: 'Joo' | 'Ei' | 'Empty';
+    answer: string;
 }
 interface PossibleDiagnosisFulfillment extends DialogFlowFulfillment {
     sessionInfo: {
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         diagnosisId: 0,
         sessionId,
         asking: '',
-        answer: 'Empty',
+        answer: '',
         endQuestions: 'False'
     };
 

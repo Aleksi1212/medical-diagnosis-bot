@@ -9,7 +9,7 @@ import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 
 interface QuestionParameters extends DialogFlowParameters {
     endQuestions: StringBoolean;
-    answer: 'Joo' | 'Ei' | 'Empty';
+    answer: string;
 }
 interface QuestionFulfillment extends DialogFlowFulfillment {
     sessionInfo: {
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 
             parameters.symptom = [...symptom, asking];
             parameters.asking = nextSymptom?.name || '';
-            parameters.answer = 'Empty'
+            parameters.answer = ''
             // parameters.diagnosisId = nextSymptom?.diagnosis[0].diagnosisId || 0
 
             messageBody[0].text.text = [`Tunnetko ${nextSymptom?.name}`];
@@ -56,7 +56,9 @@ export async function POST(request: NextRequest) {
 
             parameters.asking = nextSymptom.name
             parameters.diagnosisId = nextSymptom.diagnosis[0].diagnosisId
-            parameters.answer = 'Empty'
+            parameters.answer = ''
+            
+            messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`]
         }
     }
 
