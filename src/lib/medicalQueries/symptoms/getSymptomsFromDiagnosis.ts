@@ -1,6 +1,6 @@
 import { prisma, type SymptomReturnTypes } from '@/lib/prisma/prismaInit';
 import {
-    findDiagnosisQuery,
+    findMutltipleDiagnosisQuery,
     findSymptomsFromDiagnosisQuery,
 } from '@/lib/prisma/prismaQueryObjects';
 
@@ -8,18 +8,20 @@ async function getSymptomsFromDiagnosis(
     symptoms: string[]
 ): Promise<SymptomReturnTypes> {
     try {
-        const diagnosisQueryObject = findDiagnosisQuery(symptoms);
+        const diagnosisQueryObject = findMutltipleDiagnosisQuery(symptoms);
         const diagnosis = await prisma.diagnosis.findMany(diagnosisQueryObject);
         const diagnosisIds = diagnosis.map((obj) => obj.id);
 
         const symptomsQueryObject =
             findSymptomsFromDiagnosisQuery(diagnosisIds);
-        const possibleSymptoms = await prisma.symptom.findMany(symptomsQueryObject);
+        const possibleSymptoms = await prisma.symptom.findMany(
+            symptomsQueryObject
+        );
 
         return {
             error: false,
             errorMessage: '',
-            possibleSymptoms
+            possibleSymptoms,
         };
     } catch (error: any) {
         console.error(error);

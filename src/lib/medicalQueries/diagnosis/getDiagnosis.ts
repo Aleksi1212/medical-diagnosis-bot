@@ -1,12 +1,18 @@
-import { prisma, type DiagnosisReturnTypes } from '@/lib/prisma/prismaInit';
 import {
-    findDiagnosisQuery,
-} from '@/lib/prisma/prismaQueryObjects';
+    prisma,
+    type DiagnosisReturnTypes,
+    type Diagnosis,
+} from '@/lib/prisma/prismaInit';
+import { findSingleDiagnosisQuery } from '@/lib/prisma/prismaQueryObjects';
 
-async function getDiagnosis(symptoms: string[]): Promise<DiagnosisReturnTypes> {
+async function getDiagnosis(
+    diagnosisId: number
+): Promise<DiagnosisReturnTypes> {
     try {
-        const diagnosisQueryObject = findDiagnosisQuery(symptoms);
-        const diagnosis = await prisma.diagnosis.findMany(diagnosisQueryObject);
+        const diagnosisQueryObject = findSingleDiagnosisQuery(diagnosisId);
+        const diagnosis = (await prisma.diagnosis.findUnique(
+            diagnosisQueryObject
+        )) as Diagnosis;
 
         return {
             error: false,
@@ -18,7 +24,11 @@ async function getDiagnosis(symptoms: string[]): Promise<DiagnosisReturnTypes> {
         return {
             error: true,
             errorMessage: error.message,
-            diagnosis: [],
+            diagnosis: {
+                id: 0,
+                name: '',
+                severity: 'MEDIUM',
+            },
         };
     }
 }
