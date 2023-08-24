@@ -9,8 +9,9 @@ import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 // export const runtime = 'edge';
 
 interface PossibleDiagnosisParameters extends DialogFlowParameters {
+    endQuestions: StringBoolean;
     startQuestions: StringBoolean;
-    answer: 'Joo' | 'Ei'
+    answer: 'Joo' | 'Ei';
 }
 interface PossibleDiagnosisFulfillment extends DialogFlowFulfillment {
     sessionInfo: {
@@ -38,7 +39,8 @@ export async function POST(request: NextRequest) {
         diagnosisId: 0,
         sessionId,
         asking: '',
-        answer: 'Joo'
+        answer: 'Joo',
+        endQuestions: 'False'
     };
 
     if (symptoms) {
