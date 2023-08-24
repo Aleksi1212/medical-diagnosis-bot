@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
     const parameters: QuestionParameters = body.sessionInfo?.parameters;
 
     if (parameters) {
-        console.log(parameters);
         const {
             symptom,
             sessionId,
@@ -43,7 +42,13 @@ export async function POST(request: NextRequest) {
         } = parameters;
         let sessionData: Symptom[] = [];
 
-        if (sessionId && answer === 'Joo') {
+        if (sessionId && diagnosisConfidence.length >= 5) {
+            parameters.endQuestions = 'True';
+        } else if (
+            sessionId &&
+            answer === 'Joo' &&
+            diagnosisConfidence.length < 5
+        ) {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
             const nextSymptom = await findSymptomWithSameDiagnosiId(
                 diagnosisId,
@@ -63,7 +68,11 @@ export async function POST(request: NextRequest) {
             // parameters.diagnosisId = nextSymptom?.diagnosis[0].diagnosisId || 0
 
             messageBody[0].text.text = [`Tunnetko ${nextSymptom?.name}`];
-        } else if (sessionId && answer === 'Ei') {
+        } else if (
+            sessionId &&
+            answer === 'Ei' &&
+            diagnosisConfidence.length < 5
+        ) {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
 
             const randomIndex = getRandomNumber(sessionData.length);
@@ -80,10 +89,6 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
 
             messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
-        }
-
-        if (diagnosisConfidence.length >= 5) {
-            parameters.endQuestions = 'True'
         }
     }
 
