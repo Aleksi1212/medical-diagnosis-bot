@@ -41,4 +41,5 @@ export type {
     DiagnosisSeverity,
     SymptomQuery,
     SymptomReturnTypes,
+    Symptom
 };
