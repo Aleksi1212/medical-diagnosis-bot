@@ -16,6 +16,7 @@ interface DialogFlowParameters {
     startQuestions: StringBoolean;
     answer: string;
     ended: StringBoolean;
+    concurrentNegative: number;
 }
 interface DialogFlowFulfillment {
     fulfillmentResponse: {
@@ -25,3 +26,5 @@ interface DialogFlowFulfillment {
         parameters: DialogFlowParameters;
     };
 }
+
+export type { MessageBody, DialogFlowParameters, DialogFlowFulfillment };

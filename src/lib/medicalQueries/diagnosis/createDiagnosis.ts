@@ -1,8 +1,8 @@
-import {
-    prisma,
-    type DiangnosisCreationReturnTypes,
-    type DiagnosisSeverity,
-} from '@/lib/prisma/prismaInit';
+import { prisma } from '@/lib/prisma/prismaInit';
+import type {
+    DiagnosisSeverity,
+    DiangnosisCreationReturnTypes,
+} from '@/lib/types/prisma.types';
 
 import { diagnosisCreateQuery } from '@/lib/prisma/prismaQueryObjects';
 import getSymptoms from '../symptoms/getSymptoms';

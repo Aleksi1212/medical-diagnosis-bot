@@ -1,8 +1,5 @@
-import {
-    prisma,
-    type DiagnosisReturnTypes,
-    type Diagnosis,
-} from '@/lib/prisma/prismaInit';
+import { prisma } from '@/lib/prisma/prismaInit';
+import type { DiagnosisReturnTypes, Diagnosis } from '@/lib/types/prisma.types';
 import { findSingleDiagnosisQuery } from '@/lib/prisma/prismaQueryObjects';
 
 async function getDiagnosis(

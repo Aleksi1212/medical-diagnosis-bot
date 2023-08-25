@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { kv } from '@vercel/kv';
 
-import type { Symptom } from '@/lib/prisma/prismaInit';
+import type { Symptom } from '@/lib/types/prisma.types';
+import type {
+    MessageBody,
+    DialogFlowParameters,
+    DialogFlowFulfillment,
+} from '@/lib/types/dialogflow.types';
+
 import findSymptomWithSameDiagnosiId from '@/lib/utils/diagnosis/findSymptomWithSameDiangosisId';
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 
@@ -9,7 +15,7 @@ export async function POST(request: NextRequest) {
     const sessionStore = kv;
     const body = await request.json();
 
-    let messageBody: MessageBody[] = [
+    const messageBody: MessageBody[] = [
         {
             text: {
                 text: ['En saanut vastausta :('],
@@ -27,6 +33,7 @@ export async function POST(request: NextRequest) {
             asking,
             asked,
             diagnosisConfidence,
+            concurrentNegative,
         } = parameters;
         let sessionData: Symptom[] = [];
 
@@ -47,6 +54,8 @@ export async function POST(request: NextRequest) {
                 parameters.diagnosisId,
             ];
             parameters.answer = '';
+            parameters.concurrentNegative = 0;
+
             if (diagnosisConfidence.length > 4) {
                 parameters.endQuestions = 'True';
                 messageBody[0].text.text = [''];
@@ -64,6 +73,8 @@ export async function POST(request: NextRequest) {
             parameters.asked = [...asked, nextSymptom.name];
             parameters.diagnosisId = diagnosisId;
             parameters.answer = '';
+            parameters.concurrentNegative = concurrentNegative + 1;
+
             if (diagnosisConfidence.length > 4) {
                 parameters.endQuestions = 'True';
                 messageBody[0].text.text = [''];

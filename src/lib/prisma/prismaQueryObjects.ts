@@ -1,4 +1,4 @@
-import type { DiagnosisSeverity, SymptomQuery } from './prismaInit';
+import type { DiagnosisSeverity, SymptomQuery } from "../types/prisma.types";
 
 const findSingleDiagnosisQuery = (diagnosisId: number) => {
     return {

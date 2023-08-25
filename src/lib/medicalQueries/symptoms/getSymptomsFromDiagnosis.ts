@@ -1,8 +1,9 @@
-import { prisma, type SymptomReturnTypes } from '@/lib/prisma/prismaInit';
+import { prisma } from '@/lib/prisma/prismaInit';
 import {
     findMutltipleDiagnosisQuery,
     findSymptomsFromDiagnosisQuery,
 } from '@/lib/prisma/prismaQueryObjects';
+import type { SymptomReturnTypes } from '@/lib/types/prisma.types';
 
 async function getSymptomsFromDiagnosis(
     symptoms: string[]

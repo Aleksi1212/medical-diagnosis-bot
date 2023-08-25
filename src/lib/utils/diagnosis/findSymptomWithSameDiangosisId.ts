@@ -1,4 +1,4 @@
-import type { Symptom } from '@/lib/prisma/prismaInit';
+import type { Symptom } from '@/lib/types/prisma.types';
 
 async function findSymptomWithSameDiagnosiId(
     diagnosisId: number,
