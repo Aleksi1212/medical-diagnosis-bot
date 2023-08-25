@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
             parameters.concurrentNegative = 0;
 
-            if (diagnosisConfidence.length > 4) {
+            if (diagnosisConfidence.length > 4 || !nextSymptom) {
                 parameters.endQuestions = 'True';
                 messageBody[0].text.text = [''];
             } else {
@@ -64,23 +64,41 @@ export async function POST(request: NextRequest) {
             }
         } else if (sessionId && answer === 'Ei') {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
+            const nextSymptom = await findSymptomWithSameDiagnosiId(
+                diagnosisId,
+                sessionData,
+                asking,
+                asked
+            );
 
-            const randomIndex = getRandomNumber(sessionData.length);
-            const nextSymptom = sessionData[randomIndex];
-            const diagnosisId = nextSymptom.diagnosis[0].diagnosisId;
-
-            parameters.asking = nextSymptom.name;
-            parameters.asked = [...asked, nextSymptom.name];
-            parameters.diagnosisId = diagnosisId;
+            parameters.asking = nextSymptom?.name || '';
+            parameters.asked = [...asked, nextSymptom?.name || ''];
             parameters.answer = '';
             parameters.concurrentNegative = concurrentNegative + 1;
-
-            if (diagnosisConfidence.length > 4) {
+            
+            if (diagnosisConfidence.length > 4 || !nextSymptom) {
                 parameters.endQuestions = 'True';
                 messageBody[0].text.text = [''];
             } else {
-                messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
+                messageBody[0].text.text = [`Tunnetko ${nextSymptom?.name}`];
             }
+
+            // const randomIndex = getRandomNumber(sessionData.length);
+            // const nextSymptom = sessionData[randomIndex];
+            // const diagnosisId = nextSymptom.diagnosis[0].diagnosisId;
+
+            // parameters.asking = nextSymptom.name;
+            // parameters.asked = [...asked, nextSymptom.name];
+            // parameters.diagnosisId = diagnosisId;
+            // parameters.answer = '';
+            // parameters.concurrentNegative = concurrentNegative + 1;
+
+            // if (diagnosisConfidence.length > 4) {
+            //     parameters.endQuestions = 'True';
+            //     messageBody[0].text.text = [''];
+            // } else {
+            //     messageBody[0].text.text = [`Tunnetko ${nextSymptom.name}`];
+            // }
         }
     }
 
