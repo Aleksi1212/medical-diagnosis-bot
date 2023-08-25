@@ -8,7 +8,7 @@ import type {
 } from '@/lib/types/dialogflow.types';
 
 import { v4 as uuidv4 } from 'uuid';
-import getSymptomsFromDiagnosis from '@/lib/prisma/queries/medical/symptoms/getSymptomsFromDiagnosis';
+import getSymptomsFromDiagnosis from '@/lib/prisma/queries/medical/symptoms/getPossibleSymptoms';
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 
 // export const runtime = 'edge';
