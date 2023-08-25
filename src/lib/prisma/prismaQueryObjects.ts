@@ -1,4 +1,4 @@
-import type { DiagnosisSeverity, SymptomQuery } from "../types/prisma.types";
+import type { DiagnosisSeverity, SymptomQuery } from '../types/prisma.types';
 
 const findSingleDiagnosisQuery = (diagnosisId: number) => {
     return {
@@ -23,6 +23,24 @@ const findMutltipleDiagnosisQuery = (symptoms: string[]) => {
         },
     };
 };
+const findDiagnosisWithSameSymptoms =(diagnosisId: number, symptoms: string[]) => {
+    return {
+        where: {
+            symptoms: {
+                some: {
+                    symptom: {
+                        name: {
+                            in: symptoms
+                        }
+                    }
+                }
+            },
+            id: {
+                not: diagnosisId
+            }
+        }
+    }
+}
 
 const findCreatedSymptomsQuery = (symptom: string) => {
     return {
@@ -49,6 +67,14 @@ const findSymptomsFromDiagnosisQuery = (diagnosisIds: number[]) => {
     };
 };
 
+const findSymptomIdQuery = (symptoms: string[]) => {
+    return {
+        where: {
+            name: { in: symptoms },
+        },
+    };
+};
+
 const diagnosisCreateQuery = (
     name: string,
     severity: DiagnosisSeverity,
@@ -68,7 +94,9 @@ const diagnosisCreateQuery = (
 export {
     findSingleDiagnosisQuery,
     findMutltipleDiagnosisQuery,
+    findDiagnosisWithSameSymptoms,
     findCreatedSymptomsQuery,
     findSymptomsFromDiagnosisQuery,
     diagnosisCreateQuery,
+    findSymptomIdQuery,
 };
