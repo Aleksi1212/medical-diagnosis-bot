@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
-import createDiagnosis from '@/lib/medicalQueries/diagnosis/createDiagnosis';
+import createDiagnosis from '@/lib/prisma/queries/medical/diagnosis/createDiagnosis';
 import type { DiagnosisSeverity } from '@/lib/types/prisma.types';
 
 interface DiagnosisData {

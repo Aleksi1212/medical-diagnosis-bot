@@ -7,7 +7,7 @@ import type {
     DialogFlowFulfillment,
 } from '@/lib/types/dialogflow.types';
 
-import getDiagnosis from '@/lib/medicalQueries/diagnosis/getDiagnosis';
+import getDiagnosis from '@/lib/prisma/queries/medical/diagnosis/getDiagnosis';
 import mostConfidentDiagnosis from '@/lib/utils/diagnosis/mostConfidentDiagnosis';
 
 export async function POST(request: NextRequest) {
