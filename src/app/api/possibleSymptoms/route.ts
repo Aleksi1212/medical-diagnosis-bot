@@ -16,7 +16,9 @@ import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 export async function POST(request: NextRequest) {
     const sessionId = uuidv4();
     const sessionStore = kv;
+
     const body = await request.json();
+    const symptoms = body.sessionInfo?.parameters.symptom;
 
     const messageBody: MessageBody[] = [
         {
@@ -25,14 +27,26 @@ export async function POST(request: NextRequest) {
             },
         },
     ];
-    const parameters: DialogFlowParameters = body.sessionInfo?.parameters;
+    const parameters: DialogFlowParameters = {
+        symptom: [],
+        sessionId,
+        diagnosisId: 0,
+        asking: '',
+        asked: [],
+        diagnosisConfidence: [],
+        endQuestions: 'False',
+        startQuestions: 'True',
+        answer: '',
+        ended: 'False',
+        concurrentNegative: 0,
+    };
 
-    if (parameters) {
-        const { symptom } = parameters;
-        const symptomString = symptom.join(', ');
+    if (symptoms) {
+        parameters.symptom = symptoms;
+        const symptomString = symptoms.join(', ');
 
         const { error, errorMessage, possibleSymptoms } =
-            await getSymptomsFromDiagnosis(symptom);
+            await getSymptomsFromDiagnosis(symptoms);
 
         if (possibleSymptoms.length < 1) {
             const message = `En löytänyt diagnoosia oirella ${symptomString} :(`;
@@ -53,7 +67,7 @@ export async function POST(request: NextRequest) {
             parameters.startQuestions = 'True';
             parameters.diagnosisId = diagnosisId;
             parameters.asking = name;
-            parameters.asked = [...symptom, name];
+            parameters.asked = [...symptoms, name];
             parameters.diagnosisConfidence = [diagnosisId];
         }
     }
