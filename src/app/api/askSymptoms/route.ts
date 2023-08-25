@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
             parameters.concurrentNegative = 0;
 
-            if (diagnosisConfidence.length > 4 || !nextSymptom) {
+            if (diagnosisConfidence.length > 4) {
                 parameters.endQuestions = 'True';
                 messageBody[0].text.text = [''];
             } else {
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
             parameters.concurrentNegative = concurrentNegative + 1;
             
-            if (diagnosisConfidence.length > 4 || !nextSymptom) {
+            if (diagnosisConfidence.length > 4) {
                 parameters.endQuestions = 'True';
                 messageBody[0].text.text = [''];
             } else {
