@@ -114,7 +114,6 @@ export async function POST(request: NextRequest) {
                 parameters.answer = '';
                 parameters.concurrentNegative = concurrentNegative + 1;
                 parameters.diagnosisId = nextSymptom.diagnosis[0].diagnosisId
-                console.log(nextSymptom)
 
                 const { endQuestions, question } = checkConfidence(
                     diagnosisConfidence.length,
