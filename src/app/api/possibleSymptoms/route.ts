@@ -66,13 +66,13 @@ export async function POST(request: NextRequest) {
 
             await sessionStore.set(sessionId, possibleSymptoms);
 
-            messageBody[0].text.text = [`Onko sinulla ${name}?`];
             parameters.startQuestions = 'True';
             parameters.diagnosisId = diagnosisId;
             parameters.asking = name;
             parameters.asked = [...symptoms, name];
             parameters.diagnosisConfidence = [diagnosisId];
             parameters.possibleDiagnosis = possibleDiagnosis;
+            messageBody[0].text.text = [`Onko sinulla ${name}?`];
         }
     }
 
