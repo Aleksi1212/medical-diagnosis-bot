@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
             const symptomIndex = getRandomNumber(possibleSymptoms.length);
             const { name } = possibleSymptoms[symptomIndex];
 
-            const diagnosisIndex = getRandomNumber(possibleDiagnosis.length)
-            const diagnosisId = possibleDiagnosis[diagnosisIndex]
+            const diagnosisIndex = getRandomNumber(possibleDiagnosis.length);
+            const diagnosisId = possibleDiagnosis[diagnosisIndex];
 
             await sessionStore.set(sessionId, possibleSymptoms);
 
