@@ -17,6 +17,7 @@ interface DialogFlowParameters {
     answer: string;
     ended: StringBoolean;
     concurrentNegative: number;
+    possibleDiagnosis: number[];
 }
 interface DialogFlowFulfillment {
     fulfillmentResponse: {
