@@ -8,12 +8,11 @@ import type {
     DialogFlowFulfillment,
 } from '@/lib/types/dialogflow.types';
 
-import findSymptomWithSameDiagnosiId from '@/lib/utils/diagnosis/findSymptomWithSameDiagnosisId';
-import findNewDiagnosisFromSymptoms from '@/lib/utils/diagnosis/findNewDiagnosisFromSymptoms';
+import findSymptomWithSameDiagnosiId from '@/lib/utils/medical/findSymptomWithSameDiagnosisId';
 import checkConfidence from '@/lib/utils/ai/checkConfidence';
 
+import removeValueFromArray from '@/lib/utils/anon/removeValueFromArray';
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
-import getDiagnosisWithSameSymptoms from '@/lib/prisma/queries/medical/diagnosis/getDiagnosisWithSameSymptoms';
 
 export async function POST(request: NextRequest) {
     const sessionStore = kv;
@@ -38,6 +37,7 @@ export async function POST(request: NextRequest) {
             asked,
             diagnosisConfidence,
             concurrentNegative,
+            possibleDiagnosis,
         } = parameters;
         let sessionData: Symptom[] = [];
 
@@ -89,39 +89,33 @@ export async function POST(request: NextRequest) {
         } else if (sessionId && answer === 'Ei' && concurrentNegative >= 3) {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
 
-            const { error, errorMessage, diagnosis } =
-                await getDiagnosisWithSameSymptoms(diagnosisId, symptom);
-            const diagnosisIds = diagnosis.map((obj) => obj.id);
+            const updatedDiagnosis = removeValueFromArray<number>(
+                possibleDiagnosis,
+                diagnosisId
+            );
+            const diagnosisIndex = getRandomNumber(updatedDiagnosis.length);
+            const nextDiagnosis = updatedDiagnosis[diagnosisIndex];
 
-            if (error) {
-                console.error(errorMessage);
-                messageBody[0].text.text = [errorMessage];
-            }
-            if (diagnosis.length < 1) {
-                parameters.endQuestions = 'True';
-                messageBody[0].text.text = [''];
-            }
-            if (!error && diagnosis.length >= 1) {
-                const newSymptoms = findNewDiagnosisFromSymptoms(
-                    sessionData,
-                    diagnosisIds
-                );
-                const index = getRandomNumber(newSymptoms.length);
-                const nextSymptom = newSymptoms[index];
+            const nextSymptom = await findSymptomWithSameDiagnosiId(
+                nextDiagnosis,
+                sessionData,
+                asking,
+                asked
+            );
 
-                parameters.asking = nextSymptom.name;
-                parameters.asked = [...asked, nextSymptom.name];
-                parameters.answer = '';
-                parameters.concurrentNegative = concurrentNegative + 1;
-                parameters.diagnosisId = nextSymptom.diagnosis[0].diagnosisId
+            parameters.asking = nextSymptom?.name || '';
+            parameters.asked = [...asked, nextSymptom?.name || ''];
+            parameters.answer = '';
+            parameters.concurrentNegative = 0;
+            parameters.possibleDiagnosis = updatedDiagnosis;
+            parameters.diagnosisId = nextDiagnosis;
 
-                const { endQuestions, question } = checkConfidence(
-                    diagnosisConfidence.length,
-                    nextSymptom
-                );
-                parameters.endQuestions = endQuestions;
-                messageBody[0].text.text = [question];
-            }
+            const { endQuestions, question } = checkConfidence(
+                diagnosisConfidence.length,
+                nextSymptom
+            );
+            parameters.endQuestions = endQuestions;
+            messageBody[0].text.text = [question];
         }
     }
 
