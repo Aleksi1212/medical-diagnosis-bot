@@ -17,7 +17,7 @@ function checkConfidence(
     }
     return {
         endQuestions: 'False',
-        question: `Onko sinulla ${nextSymptom?.name}`,
+        question: `Onko sinulla ${nextSymptom?.name}?`,
     };
 }
 
