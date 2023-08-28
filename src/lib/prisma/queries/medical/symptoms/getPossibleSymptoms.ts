@@ -11,7 +11,6 @@ async function getSymptomsFromDiagnosis(
     try {
         const diagnosisQueryObject = findMutltipleDiagnosisQuery(symptoms);
         const diagnosis = await prisma.diagnosis.findMany(diagnosisQueryObject);
-        console.log(diagnosis)
         const diagnosisIds = diagnosis.map((obj) => obj.id);
 
         const symptomsQueryObject =

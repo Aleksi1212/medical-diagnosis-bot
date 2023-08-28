@@ -8,8 +8,12 @@ import type {
     DialogFlowFulfillment,
 } from '@/lib/types/dialogflow.types';
 
-import findSymptomWithSameDiagnosiId from '@/lib/utils/diagnosis/findSymptomWithSameDiangosisId';
+import findSymptomWithSameDiagnosiId from '@/lib/utils/diagnosis/findSymptomWithSameDiagnosisId';
+import findNewDiagnosisFromSymptoms from '@/lib/utils/diagnosis/findNewDiagnosisFromSymptoms';
+import checkConfidence from '@/lib/utils/ai/checkConfidence';
+
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
+import getDiagnosisWithSameSymptoms from '@/lib/prisma/queries/medical/diagnosis/getDiagnosisWithSameSymptoms';
 
 export async function POST(request: NextRequest) {
     const sessionStore = kv;
@@ -56,14 +60,13 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
             parameters.concurrentNegative = 0;
 
-            if (diagnosisConfidence.length > 4 || !nextSymptom) {
-                parameters.endQuestions = 'True';
-                messageBody[0].text.text = [''];
-            } else {
-                const question = `Onko sinulla ${nextSymptom?.name}`;
-                messageBody[0].text.text = [question];
-            }
-        } else if (sessionId && answer === 'Ei') {
+            const { endQuestions, question } = checkConfidence(
+                diagnosisConfidence.length,
+                nextSymptom
+            );
+            parameters.endQuestions = endQuestions;
+            messageBody[0].text.text = [question];
+        } else if (sessionId && answer === 'Ei' && concurrentNegative < 3) {
             sessionData = (await sessionStore.get(sessionId)) as Symptom[];
             const nextSymptom = await findSymptomWithSameDiagnosiId(
                 diagnosisId,
@@ -77,11 +80,47 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
             parameters.concurrentNegative = concurrentNegative + 1;
 
-            if (diagnosisConfidence.length > 4 || !nextSymptom) {
+            const { endQuestions, question } = checkConfidence(
+                diagnosisConfidence.length,
+                nextSymptom
+            );
+            parameters.endQuestions = endQuestions;
+            messageBody[0].text.text = [question];
+        } else if (sessionId && answer === 'Ei' && concurrentNegative >= 3) {
+            sessionData = (await sessionStore.get(sessionId)) as Symptom[];
+
+            const { error, errorMessage, diagnosis } =
+                await getDiagnosisWithSameSymptoms(diagnosisId, symptom);
+            const diagnosisIds = diagnosis.map((obj) => obj.id);
+
+            if (error) {
+                console.error(errorMessage);
+                messageBody[0].text.text = [errorMessage];
+            }
+            if (diagnosis.length < 1) {
                 parameters.endQuestions = 'True';
                 messageBody[0].text.text = [''];
-            } else {
-                const question = `Onko sinulla ${nextSymptom?.name}`;
+            }
+            if (!error && diagnosis.length >= 1) {
+                const newSymptoms = findNewDiagnosisFromSymptoms(
+                    sessionData,
+                    diagnosisIds
+                );
+                const index = getRandomNumber(newSymptoms.length);
+                const nextSymptom = newSymptoms[index];
+
+                parameters.asking = nextSymptom.name;
+                parameters.asked = [...asked, nextSymptom.name];
+                parameters.answer = '';
+                parameters.concurrentNegative = concurrentNegative + 1;
+                parameters.diagnosisId = nextSymptom.diagnosis[0].diagnosisId
+                console.log(nextSymptom)
+
+                const { endQuestions, question } = checkConfidence(
+                    diagnosisConfidence.length,
+                    nextSymptom
+                );
+                parameters.endQuestions = endQuestions;
                 messageBody[0].text.text = [question];
             }
         }
