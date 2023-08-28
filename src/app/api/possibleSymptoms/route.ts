@@ -8,7 +8,7 @@ import type {
 } from '@/lib/types/dialogflow.types';
 
 import { v4 as uuidv4 } from 'uuid';
-import getSymptomsFromDiagnosis from '@/lib/prisma/queries/medical/symptoms/getPossibleSymptoms';
+import getPossibleSymptoms from '@/lib/prisma/queries/medical/symptoms/getPossibleSymptoms';
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 
 // export const runtime = 'edge';
@@ -39,14 +39,15 @@ export async function POST(request: NextRequest) {
         answer: '',
         ended: 'False',
         concurrentNegative: 0,
+        possibleDiagnosis: [],
     };
 
     if (symptoms) {
         parameters.symptom = symptoms;
         const symptomString = symptoms.join(', ');
 
-        const { error, errorMessage, possibleSymptoms } =
-            await getSymptomsFromDiagnosis(symptoms);
+        const { error, errorMessage, possibleSymptoms, possibleDiagnosis } =
+            await getPossibleSymptoms(symptoms);
 
         if (possibleSymptoms.length < 1) {
             const message = `En löytänyt diagnoosia oirella ${symptomString} :(`;
@@ -57,18 +58,21 @@ export async function POST(request: NextRequest) {
         }
 
         if (!error && possibleSymptoms.length >= 1) {
-            const randomIndex = getRandomNumber(possibleSymptoms.length);
-            const { name, diagnosis } = possibleSymptoms[randomIndex];
-            const diagnosisId = diagnosis[0].diagnosisId;
+            const symptomIndex = getRandomNumber(possibleSymptoms.length);
+            const { name, diagnosis } = possibleSymptoms[symptomIndex];
+
+            const diagnosisIndex = getRandomNumber(diagnosis.length);
+            const diagnosisId = diagnosis[diagnosisIndex].diagnosisId;
 
             await sessionStore.set(sessionId, possibleSymptoms);
 
-            messageBody[0].text.text = [`Tunnetko ${name}`];
+            messageBody[0].text.text = [`Onko sinulla ${name}?`];
             parameters.startQuestions = 'True';
             parameters.diagnosisId = diagnosisId;
             parameters.asking = name;
             parameters.asked = [...symptoms, name];
             parameters.diagnosisConfidence = [diagnosisId];
+            parameters.possibleDiagnosis = possibleDiagnosis;
         }
     }
 
