@@ -27,6 +27,7 @@ interface DiagnosisReturnTypes extends ReturnTypes {
 }
 interface SymptomReturnTypes extends ReturnTypes {
     possibleSymptoms: Symptom[];
+    possibleDiagnosis: number[];
 }
 interface DiangnosisArrayReturnTypes extends ReturnTypes {
     diagnosis: Diagnosis[];
