@@ -59,10 +59,10 @@ export async function POST(request: NextRequest) {
 
         if (!error && possibleSymptoms.length >= 1) {
             const symptomIndex = getRandomNumber(possibleSymptoms.length);
-            const { name, diagnosis } = possibleSymptoms[symptomIndex];
+            const { name } = possibleSymptoms[symptomIndex];
 
-            const diagnosisIndex = getRandomNumber(diagnosis.length);
-            const diagnosisId = diagnosis[diagnosisIndex].diagnosisId;
+            const diagnosisIndex = getRandomNumber(possibleDiagnosis.length)
+            const diagnosisId = possibleDiagnosis[diagnosisIndex]
 
             await sessionStore.set(sessionId, possibleSymptoms);
 
