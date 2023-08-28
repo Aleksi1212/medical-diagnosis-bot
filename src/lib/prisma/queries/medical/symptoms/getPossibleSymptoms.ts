@@ -5,7 +5,7 @@ import {
 } from '@/lib/prisma/prismaQueryObjects';
 import type { SymptomReturnTypes } from '@/lib/types/prisma.types';
 
-async function getSymptomsFromDiagnosis(
+async function getPossibleSymptoms(
     symptoms: string[]
 ): Promise<SymptomReturnTypes> {
     try {
@@ -23,6 +23,7 @@ async function getSymptomsFromDiagnosis(
             error: false,
             errorMessage: '',
             possibleSymptoms,
+            possibleDiagnosis: diagnosisIds,
         };
     } catch (error: any) {
         console.error(error);
@@ -30,8 +31,9 @@ async function getSymptomsFromDiagnosis(
             error: true,
             errorMessage: error.message,
             possibleSymptoms: [],
+            possibleDiagnosis: [],
         };
     }
 }
 
-export default getSymptomsFromDiagnosis;
+export default getPossibleSymptoms;
