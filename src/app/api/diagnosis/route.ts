@@ -8,7 +8,7 @@ import type {
 } from '@/lib/types/dialogflow.types';
 
 import getDiagnosis from '@/lib/prisma/queries/medical/diagnosis/getDiagnosis';
-import mostConfidentDiagnosis from '@/lib/utils/diagnosis/mostConfidentDiagnosis';
+import mostConfidentDiagnosis from '@/lib/utils/medical/mostConfidentDiagnosis';
 
 export async function POST(request: NextRequest) {
     const sessionStore = kv;
