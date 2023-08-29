@@ -4,12 +4,13 @@ import type {
     DialogFlowParameters,
     MessageBody,
 } from '@/lib/types/dialogflow.types';
-import removeKeysFromObjects from '@/lib/utils/anon/removeKeysFromObject';
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
     const { searchParams } = new URL(request.url);
-    const excludedParam = searchParams.get('exclude');
+    const excludedParam = searchParams.get(
+        'exclude'
+    ) as keyof DialogFlowParameters;
 
     const messageBody: MessageBody[] = [
         {
@@ -19,15 +20,28 @@ export async function POST(request: NextRequest) {
         },
     ];
     const parameters: DialogFlowParameters = body.sessionInfo?.parameters;
-    let modifiedParameters: any = {};
+    let modifiedParameters: DialogFlowParameters = {
+        symptom: [],
+        sessionId: '',
+        diagnosisId: 0,
+        asking: '',
+        asked: [],
+        diagnosisConfidence: [],
+        endQuestions: 'False',
+        startQuestions: 'True',
+        answer: '',
+        ended: 'False',
+        concurrentNegative: 0,
+        possibleDiagnosis: [],
+    };
 
     if (parameters) {
-        messageBody[0].text.text = [''];
+        messageBody[0].text.text = ['params cleared'];
         if (excludedParam) {
-            modifiedParameters = removeKeysFromObjects(
-                parameters,
-                excludedParam
-            );
+            modifiedParameters = {
+                ...modifiedParameters,
+                [excludedParam]: parameters[excludedParam],
+            };
         }
     }
 
