@@ -11,15 +11,13 @@ const findSingleDiagnosisQuery = (diagnosisId: number) => {
 const findMutltipleDiagnosisQuery = (symptoms: string[]) => {
     return {
         where: {
-            AND: symptoms.map((symptom) => ({
-                symptoms: {
-                    some: {
-                        symptom: {
-                            name: symptom,
-                        },
-                    },
-                },
-            })),
+            symptoms: {
+                some: {
+                    symptom: {
+                        name: { in: symptoms }
+                    }
+                }
+            }
         },
     };
 };
