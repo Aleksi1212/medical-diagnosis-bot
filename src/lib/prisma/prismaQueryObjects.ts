@@ -11,6 +11,24 @@ const findSingleDiagnosisQuery = (diagnosisId: number) => {
 const findMutltipleDiagnosisQuery = (symptoms: string[]) => {
     return {
         where: {
+            AND: symptoms.map((symptom) => ({
+                symptoms: {
+                    some: {
+                        symptom: {
+                            name: symptom,
+                        },
+                    },
+                },
+            })),
+        },
+    };
+};
+const findDiagnosisWithSameSymptoms = (
+    diagnosisId: number,
+    symptoms: string[]
+) => {
+    return {
+        where: {
             symptoms: {
                 some: {
                     symptom: {
@@ -20,27 +38,12 @@ const findMutltipleDiagnosisQuery = (symptoms: string[]) => {
                     },
                 },
             },
+            id: {
+                not: diagnosisId,
+            },
         },
     };
 };
-const findDiagnosisWithSameSymptoms =(diagnosisId: number, symptoms: string[]) => {
-    return {
-        where: {
-            symptoms: {
-                some: {
-                    symptom: {
-                        name: {
-                            in: symptoms
-                        }
-                    }
-                }
-            },
-            id: {
-                not: diagnosisId
-            }
-        }
-    }
-}
 
 const findCreatedSymptomsQuery = (symptom: string) => {
     return {
