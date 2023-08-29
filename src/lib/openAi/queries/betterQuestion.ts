@@ -27,11 +27,12 @@ async function makeBetterSymptomQuestion(
             model: 'gpt-3.5-turbo',
         });
         const betterQuestion = betterQuestionRequest.choices[0].message.content;
+        const fixedQuestion = betterQuestion?.replace(/['"]/g, '');
 
         return {
             error: false,
             errorMessage: '',
-            question: betterQuestion || initialQuestion,
+            question: fixedQuestion || initialQuestion,
         };
     } catch (error: any) {
         return {
