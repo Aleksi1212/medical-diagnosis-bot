@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import getPossibleSymptoms from '@/lib/prisma/queries/medical/symptoms/getPossibleSymptoms';
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 import filterSymptoms from '@/lib/utils/medical/filterSymptoms';
+import makeBetterSymptomQuestion from '@/lib/openAi/queries/betterQuestion';
 
 // export const runtime = 'edge';
 
@@ -72,13 +73,17 @@ export async function POST(request: NextRequest) {
 
             await sessionStore.set(sessionId, possibleSymptoms);
 
+            const { error, errorMessage, question } =
+                await makeBetterSymptomQuestion(name);
+            if (error) console.error(errorMessage);
+
             parameters.startQuestions = 'True';
             parameters.diagnosisId = diagnosisId;
             parameters.asking = name;
             parameters.asked = [...symptoms, name];
             parameters.diagnosisConfidence = [diagnosisId];
             parameters.possibleDiagnosis = possibleDiagnosis;
-            messageBody[0].text.text = [`Onko sinulla ${name}?`];
+            messageBody[0].text.text = [question];
         }
     }
 
