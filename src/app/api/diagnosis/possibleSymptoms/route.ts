@@ -10,6 +10,7 @@ import type {
 import { v4 as uuidv4 } from 'uuid';
 import getPossibleSymptoms from '@/lib/prisma/queries/medical/symptoms/getPossibleSymptoms';
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
+import filterSymptoms from '@/lib/utils/medical/filterSymptoms';
 
 // export const runtime = 'edge';
 
@@ -58,11 +59,16 @@ export async function POST(request: NextRequest) {
         }
 
         if (!error && possibleSymptoms.length >= 1) {
-            const symptomIndex = getRandomNumber(possibleSymptoms.length);
-            const { name } = possibleSymptoms[symptomIndex];
+            const filteredSymptoms = filterSymptoms(possibleSymptoms, symptoms);
+            const symptomIndex = getRandomNumber(filteredSymptoms.length);
+            const { name } = filteredSymptoms[symptomIndex];
 
             const diagnosisIndex = getRandomNumber(possibleDiagnosis.length);
             const diagnosisId = possibleDiagnosis[diagnosisIndex];
+
+            if (possibleDiagnosis.length === 1) {
+                parameters.endQuestions = 'True';
+            }
 
             await sessionStore.set(sessionId, possibleSymptoms);
 
