@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
             parameters.concurrentNegative = 0;
 
-            const { endQuestions, question } = checkConfidence(
+            const { endQuestions, question } = await checkConfidence(
                 diagnosisConfidence.length,
                 nextSymptom
             );
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
             parameters.answer = '';
             parameters.concurrentNegative = concurrentNegative + 1;
 
-            const { endQuestions, question } = checkConfidence(
+            const { endQuestions, question } = await checkConfidence(
                 diagnosisConfidence.length,
                 nextSymptom
             );
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
             parameters.possibleDiagnosis = updatedDiagnosis;
             parameters.diagnosisId = nextDiagnosis;
 
-            const { endQuestions, question } = checkConfidence(
+            const { endQuestions, question } = await checkConfidence(
                 diagnosisConfidence.length,
                 nextSymptom
             );

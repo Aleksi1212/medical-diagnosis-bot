@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const envVariables = z.object({
     DATABASE_URL: z.string(),
-    JWT_SECRET: z.string(),
+    OPEN_AI_API_KEY: z.string(),
 });
 
 envVariables.parse(process.env);
