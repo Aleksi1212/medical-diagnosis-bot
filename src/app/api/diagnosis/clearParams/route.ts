@@ -21,8 +21,14 @@ export async function POST(request: NextRequest) {
     const parameters: DialogFlowParameters = body.sessionInfo?.parameters;
     let modifiedParameters: any = {};
 
-    if (excludedParam) {
-        modifiedParameters = removeKeysFromObjects(parameters, excludedParam);
+    if (parameters) {
+        messageBody[0].text.text = [''];
+        if (excludedParam) {
+            modifiedParameters = removeKeysFromObjects(
+                parameters,
+                excludedParam
+            );
+        }
     }
 
     const dialogFlowFulfillment: DialogFlowFulfillment = {
