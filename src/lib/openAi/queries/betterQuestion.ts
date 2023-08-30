@@ -1,6 +1,6 @@
 import openAi from '../openAiInit';
 
-interface Messageobject {
+interface PromptObject {
     role: 'user' | 'assistant' | 'system';
     content: string;
 }
@@ -15,15 +15,15 @@ async function makeBetterSymptomQuestion(
     symptom: string
 ): Promise<ReturnTypes> {
     const initialQuestion = `Onko sinulla ${symptom}`;
-    const message: string = `paranna tätä lausetta: "${initialQuestion}" (vastaus pelkästään)`;
-    const messageObject: Messageobject = {
+    const prompt: string = `paranna tätä lausetta: "${initialQuestion}" (vastaus pelkästään)`;
+    const prompObject: PromptObject = {
         role: 'user',
-        content: message,
+        content: prompt,
     };
 
     try {
         const betterQuestionRequest = await openAi.chat.completions.create({
-            messages: [messageObject],
+            messages: [prompObject],
             model: 'gpt-3.5-turbo',
         });
         const betterQuestion = betterQuestionRequest.choices[0].message.content;
