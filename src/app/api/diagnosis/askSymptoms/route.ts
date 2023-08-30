@@ -14,6 +14,8 @@ import checkConfidence from '@/lib/utils/ai/checkConfidence';
 import removeValueFromArray from '@/lib/utils/anon/removeValueFromArray';
 import getRandomNumber from '@/lib/utils/anon/getRandomNumber';
 
+export const runtime = 'edge';
+
 export async function POST(request: NextRequest) {
     const sessionStore = kv;
     const body = await request.json();
